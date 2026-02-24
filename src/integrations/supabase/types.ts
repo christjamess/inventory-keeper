@@ -14,7 +14,136 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      categories: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      items: {
+        Row: {
+          category_id: string
+          created_at: string
+          id: string
+          image: string | null
+          name: string
+          notes: string | null
+          price: number
+          quantity: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category_id: string
+          created_at?: string
+          id?: string
+          image?: string | null
+          name: string
+          notes?: string | null
+          price?: number
+          quantity?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category_id?: string
+          created_at?: string
+          id?: string
+          image?: string | null
+          name?: string
+          notes?: string | null
+          price?: number
+          quantity?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "items_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transactions: {
+        Row: {
+          created_at: string
+          discount: number
+          id: string
+          item_id: string | null
+          item_name_snapshot: string
+          notes: string | null
+          price_each: number
+          qty_sold: number
+          total_amount: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          discount?: number
+          id?: string
+          item_id?: string | null
+          item_name_snapshot: string
+          notes?: string | null
+          price_each: number
+          qty_sold: number
+          total_amount: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          discount?: number
+          id?: string
+          item_id?: string | null
+          item_name_snapshot?: string
+          notes?: string | null
+          price_each?: number
+          qty_sold?: number
+          total_amount?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_settings: {
+        Row: {
+          low_stock_threshold: number
+          user_id: string
+        }
+        Insert: {
+          low_stock_threshold?: number
+          user_id: string
+        }
+        Update: {
+          low_stock_threshold?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

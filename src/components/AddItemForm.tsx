@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "@/hooks/use-toast";
 import { PackagePlus, ImagePlus, X } from "lucide-react";
 
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 
 export default function AddItemForm() {
   const { categories, addItem } = useStore();
@@ -47,10 +47,10 @@ export default function AddItemForm() {
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = (ev: React.FormEvent) => {
+  const handleSubmit = async (ev: React.FormEvent) => {
     ev.preventDefault();
     if (!validate()) return;
-    const err = addItem({
+    const err = await addItem({
       name: name.trim(),
       categoryId,
       quantity: parseInt(quantity),
