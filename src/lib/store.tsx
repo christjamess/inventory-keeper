@@ -83,11 +83,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [fetchAll]);
 
   const deleteCategory = useCallback(async (id: string): Promise<string | null> => {
+    // Delete all items in this category first
+    const { error: itemsErr } = await supabase.from("items").delete().eq("category_id", id);
+    if (itemsErr) return itemsErr.message;
     const { error } = await supabase.from("categories").delete().eq("id", id);
-    if (error) {
-      if (error.code === "23503") return "Cannot delete: category has items assigned. Reassign them first.";
-      return error.message;
-    }
+    if (error) return error.message;
     await fetchAll();
     return null;
   }, [fetchAll]);

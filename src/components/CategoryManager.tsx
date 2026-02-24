@@ -74,23 +74,30 @@ export default function CategoryManager() {
                   <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => { setEditingId(c.id); setEditName(c.name); }}>
                     <Pencil className="h-3.5 w-3.5" />
                   </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive">
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete "{c.name}"?</AlertDialogTitle>
-                        <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleDelete(c.id)}>Delete</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                   <AlertDialog>
+                     <AlertDialogTrigger asChild>
+                       <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive">
+                         <Trash2 className="h-3.5 w-3.5" />
+                       </Button>
+                     </AlertDialogTrigger>
+                     <AlertDialogContent>
+                       <AlertDialogHeader>
+                         <AlertDialogTitle>Delete "{c.name}"?</AlertDialogTitle>
+                         <AlertDialogDescription>
+                           Deleting this category will permanently delete all items inside it. This action cannot be undone. Past transaction history will remain. Do you want to continue?
+                         </AlertDialogDescription>
+                       </AlertDialogHeader>
+                       <AlertDialogFooter>
+                         <AlertDialogCancel>Cancel</AlertDialogCancel>
+                         <AlertDialogAction
+                           onClick={() => handleDelete(c.id)}
+                           className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                         >
+                           Continue
+                         </AlertDialogAction>
+                       </AlertDialogFooter>
+                     </AlertDialogContent>
+                   </AlertDialog>
                 </>
               )}
             </li>
