@@ -16,22 +16,22 @@ export default function CategoryManager() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
 
-  const handleAdd = () => {
-    const err = addCategory(newName);
+  const handleAdd = async () => {
+    const err = await addCategory(newName);
     if (err) { toast({ title: "Error", description: err, variant: "destructive" }); return; }
     setNewName("");
     toast({ title: "Category added" });
   };
 
-  const handleEdit = (id: string) => {
-    const err = editCategory(id, editName);
+  const handleEdit = async (id: string) => {
+    const err = await editCategory(id, editName);
     if (err) { toast({ title: "Error", description: err, variant: "destructive" }); return; }
     setEditingId(null);
     toast({ title: "Category updated" });
   };
 
-  const handleDelete = (id: string) => {
-    const err = deleteCategory(id);
+  const handleDelete = async (id: string) => {
+    const err = await deleteCategory(id);
     if (err) { toast({ title: "Error", description: err, variant: "destructive" }); return; }
     toast({ title: "Category deleted" });
   };

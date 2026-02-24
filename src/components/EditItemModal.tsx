@@ -20,6 +20,7 @@ export default function EditItemModal({ itemId, onClose }: { itemId: string; onC
   const [price, setPrice] = useState(item?.price.toString() || "0");
   const [image, setImage] = useState<string | undefined>(item?.image);
   const [notes, setNotes] = useState(item?.notes || "");
+  const [saving, setSaving] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   if (!item) return null;
@@ -38,7 +39,7 @@ export default function EditItemModal({ itemId, onClose }: { itemId: string; onC
     reader.readAsDataURL(file);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const q = parseInt(quantity);
     const p = parseFloat(price);
     if (!name.trim()) { toast({ title: "Error", description: "Name required", variant: "destructive" }); return; }
@@ -46,7 +47,9 @@ export default function EditItemModal({ itemId, onClose }: { itemId: string; onC
     if (isNaN(q) || q < 0 || !Number.isInteger(q)) { toast({ title: "Error", description: "Quantity must be whole number ≥ 0", variant: "destructive" }); return; }
     if (isNaN(p) || p < 0) { toast({ title: "Error", description: "Price must be ≥ 0", variant: "destructive" }); return; }
 
-    const err = editItem(itemId, { name, categoryId, quantity: q, price: p, image, notes: notes.trim() || undefined });
+    setSaving(true);
+    const err = await editItem(itemId, { name, categoryId, quantity: q, price: p, image, notes: notes.trim() || undefined });
+    setSaving(false);
     if (err) { toast({ title: "Error", description: err, variant: "destructive" }); return; }
     toast({ title: "Item updated" });
     onClose();
@@ -97,7 +100,7 @@ export default function EditItemModal({ itemId, onClose }: { itemId: string; onC
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>Cancel</Button>
-          <Button onClick={handleSave}>Save Changes</Button>
+          <Button onClick={handleSave} disabled={saving}>{saving ? "Saving..." : "Save Changes"}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

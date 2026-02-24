@@ -1,5 +1,7 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Package, BarChart3, ShoppingCart } from "lucide-react";
+import { LayoutDashboard, Package, BarChart3, ShoppingCart, LogOut } from "lucide-react";
+import { useAuth } from "@/lib/auth";
+import { Button } from "@/components/ui/button";
 
 const links = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -9,6 +11,8 @@ const links = [
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
+  const { signOut, user } = useAuth();
+
   return (
     <div className="min-h-screen bg-background">
       <nav className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
@@ -31,6 +35,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <span className="hidden sm:inline">{l.label}</span>
             </NavLink>
           ))}
+          <div className="ml-auto flex items-center gap-2">
+            <span className="hidden md:inline text-xs text-muted-foreground">{user?.email}</span>
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={signOut} title="Sign out">
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </nav>
       <main className="mx-auto max-w-6xl p-4 md:p-6 animate-fade-in">

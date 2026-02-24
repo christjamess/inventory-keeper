@@ -14,6 +14,7 @@ export default function SellModal({ itemId, onClose }: { itemId: string; onClose
   const [priceEach, setPriceEach] = useState(item?.price.toString() || "0");
   const [discount, setDiscount] = useState("0");
   const [notes, setNotes] = useState("");
+  const [saving, setSaving] = useState(false);
 
   if (!item) return null;
 
@@ -23,8 +24,10 @@ export default function SellModal({ itemId, onClose }: { itemId: string; onClose
   const subtotal = qtyNum * priceNum;
   const total = subtotal - discNum;
 
-  const handleSell = () => {
-    const err = sellItem(itemId, qtyNum, priceNum, discNum, notes.trim() || undefined);
+  const handleSell = async () => {
+    setSaving(true);
+    const err = await sellItem(itemId, qtyNum, priceNum, discNum, notes.trim() || undefined);
+    setSaving(false);
     if (err) { toast({ title: "Error", description: err, variant: "destructive" }); return; }
     toast({ title: "Sale completed!", description: `Sold ${qtyNum}× ${item.name}` });
     onClose();
@@ -70,7 +73,9 @@ export default function SellModal({ itemId, onClose }: { itemId: string; onClose
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>Cancel</Button>
-          <Button onClick={handleSell} disabled={qtyNum < 1 || total < 0}>Confirm Sale</Button>
+          <Button onClick={handleSell} disabled={qtyNum < 1 || total < 0 || saving}>
+            {saving ? "Processing..." : "Confirm Sale"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
