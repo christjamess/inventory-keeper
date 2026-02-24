@@ -16,6 +16,7 @@ interface StoreState {
   editItem: (id: string, updates: Partial<Omit<Item, "id">>) => Promise<string | null>;
   deleteItem: (id: string) => Promise<void>;
   sellItem: (itemId: string, qty: number, priceEach: number, discount: number, notes?: string) => Promise<string | null>;
+  clearTransactions: () => Promise<string | null>;
   setLowStockThreshold: (v: number) => Promise<void>;
   refresh: () => Promise<void>;
 }
@@ -177,6 +178,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     return null;
   }, [user, items, fetchAll]);
 
+  const clearTransactions = useCallback(async (): Promise<string | null> => {
+    if (!user) return "Not authenticated";
+    const { error } = await supabase.from("transactions").delete().eq("user_id", user.id);
+    if (error) return error.message;
+    await fetchAll();
+    return null;
+  }, [user, fetchAll]);
+
   const setLowStockThreshold = useCallback(async (v: number) => {
     if (!user) return;
     const val = Math.max(0, Math.floor(v));
@@ -188,7 +197,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     <StoreContext.Provider value={{
       categories, items, transactions, lowStockThreshold, loading,
       addCategory, editCategory, deleteCategory,
-      addItem, editItem, deleteItem, sellItem,
+      addItem, editItem, deleteItem, sellItem, clearTransactions,
       setLowStockThreshold, refresh: fetchAll,
     }}>
       {children}

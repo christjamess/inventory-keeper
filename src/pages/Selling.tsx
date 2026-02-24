@@ -3,13 +3,15 @@ import { useStore } from "@/lib/store";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DollarSign, ShoppingCart, Receipt, Search, Download } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { DollarSign, ShoppingCart, Receipt, Search, Download, Trash2 } from "lucide-react";
 import { format, isToday, isThisWeek, isThisMonth } from "date-fns";
+import { toast } from "@/hooks/use-toast";
 
 type TimeFilter = "all" | "today" | "week" | "month";
 
 export default function Selling() {
-  const { transactions } = useStore();
+  const { transactions, clearTransactions } = useStore();
   const [search, setSearch] = useState("");
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("all");
 
@@ -76,6 +78,34 @@ export default function Selling() {
         <Button variant="outline" onClick={exportCSV} disabled={filtered.length === 0}>
           <Download className="mr-1 h-4 w-4" /> Export CSV
         </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" disabled={transactions.length === 0}>
+              <Trash2 className="mr-1 h-4 w-4" /> Clear All
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Clear all transaction history?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently delete all your transaction records. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                onClick={async () => {
+                  const err = await clearTransactions();
+                  if (err) toast({ title: "Error", description: err, variant: "destructive" });
+                  else toast({ title: "Cleared", description: "All transaction history has been deleted." });
+                }}
+              >
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
 
       {/* Table */}
